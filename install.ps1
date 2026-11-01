@@ -30,7 +30,7 @@ $testBody = @{
 try {
     $headers = @{ "Authorization" = "Bearer $plainApiKey"; "Content-Type" = "application/json" }
     $response = Invoke-RestMethod -Uri $uri -Method Post -Headers $headers -Body $testBody -TimeoutSec 10
-    Write-Host "`n[PHANTOM] $response`n" -ForegroundColor Magenta
+    Write-Host "`n[PHANTOM] $response.choices[0].message.content`n" -ForegroundColor Magenta
     Write-Host "[SUCCESS] Connection verified! The phantom is listening..." -ForegroundColor Green
 } catch {
     Write-Host "[ERROR] API test failed! Please check your API key and try again." -ForegroundColor Red
