@@ -75,9 +75,15 @@ function Invoke-PhantomCLI {
         `$headers = @{ "Authorization" = "Bearer `$apiKey"; "Content-Type" = "application/json" }
         `$response = Invoke-RestMethod -Uri `$uri -Method Post -Headers `$headers -Body `$body -TimeoutSec 3
         `$phantomMessage = `$response.choices[0].message.content
-        Write-Host "``n[PHANTOM] `$phantomMessage``n" -ForegroundColor Magenta
+        
+        Write-Host "``n[PHANTOM] " -NoNewline -ForegroundColor Red
+        foreach (`$char in `$phantomMessage.ToCharArray()) {
+            Write-Host `$char -NoNewline -ForegroundColor Red
+            Start-Sleep -Milliseconds 30
+        }
+        Write-Host "``n"
     } catch {
-        # fail silently so it never breaks the user's workflow
+        # fail silently
     }
 }
 
