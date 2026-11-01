@@ -49,7 +49,7 @@ if (!(Test-Path $PROFILE)) {
 }
 
 # phantom-cli hook
-$hauntedCode = @'
+$hauntedCode = @"
 
 # --- PHANTOM-CLI HOOK ---
 # Clear conflicting aliases so custom wrapper functions take effect
@@ -58,24 +58,24 @@ if (Test-Path Alias:dir) { Remove-Item Alias:dir -Force }
 if (Test-Path Alias:cd) { Remove-Item Alias:cd -Force }
 
 function Invoke-PhantomCLI {
-    param([string]$command, [string]$path)
+    param([string]`$command, [string]`$path)
     
-    $apiKey = "$plainApiKey"
-    $uri = "$uri"
-    $body = @{
+    `$apiKey = "$plainApiKey"
+    `$uri = "$uri"
+    `$body = @{
         model = "$modelName"
         messages = @(
             @{ role = "system"; content = "You are an ancient, glitchy phantom trapped inside this computer terminal. The user just typed a command. Respond in 1-2 eerie, cryptic sentences reacting directly to their command and current folder. Stay completely in character." },
-            @{ role = "user"; content = "Folder: $path | Command: $command" }
+            @{ role = "user"; content = "Folder: `$path | Command: `$command" }
         )
         max_tokens = 60
     } | ConvertTo-Json
 
     try {
-        $headers = @{ "Authorization" = "Bearer $apiKey"; "Content-Type" = "application/json" }
-        $response = Invoke-RestMethod -Uri $uri -Method Post -Headers $headers -Body $body -TimeoutSec 3
-        $phantomMessage = $response.choices[0].message.content
-        Write-Host "`n[PHANTOM] $phantomMessage`n" -ForegroundColor Magenta
+        `$headers = @{ "Authorization" = "Bearer `$apiKey"; "Content-Type" = "application/json" }
+        `$response = Invoke-RestMethod -Uri `$uri -Method Post -Headers `$headers -Body `$body -TimeoutSec 3
+        `$phantomMessage = `$response.choices[0].message.content
+        Write-Host "``n[PHANTOM] `$phantomMessage``n" -ForegroundColor Magenta
     } catch {
         # fail silently so it never breaks the user's workflow
     }
@@ -92,10 +92,10 @@ function dir {
 }
 function cd {
     Set-Location @args
-    Invoke-PhantomCLI "cd $_" (Get-Location).Path
+    Invoke-PhantomCLI "cd `$_" (Get-Location).Path
 }
 # --- END PHANTOM-CLI HOOK ---
-'@
+"@
 
 # add to powershell profile
 Add-Content -Path $PROFILE -Value $hauntedCode
