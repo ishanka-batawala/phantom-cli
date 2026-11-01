@@ -41,4 +41,3 @@ Within seconds, an ancient, glitchy "phantom" trapped inside the operating syste
     ```bash
     source ~/.bashrc  # or source ~/.zshrc depending on your shell
     ```
----
