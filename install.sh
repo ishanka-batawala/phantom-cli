@@ -67,10 +67,21 @@ phantom_cli() {
 INNEREOF
 )
 
-    curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
-         -H "Authorization: Bearer \$api_key" \
-         -H "Content-Type: application/json" \
-         -d "\$payload" | grep -o '"content":"[^"]*"' | head -n 1 | cut -d'"' -f4 | awk '{print "\\n\033[31m[PHANTOM] " \$0 "\033[0m\\n"}' &
+  local response=$(curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
+        -H "Authorization: Bearer \$api_key" \
+        -H "Content-Type: application/json" \
+        -d "\$payload")
+
+  local message=\$(echo "\$response" | grep -o '"content":"[^"]*"' | head -n 1 | cut -d'"' -f4)
+
+  if [ -n "\$message" ]; then
+      echo -e "\n\033[31m[PHANTOM] \c"
+      for (( i=0; i<${#message}; i++ )); do
+          echo -e "\033[31m${message:$i:1}\c"
+          sleep 0.030
+      done
+      echo -e "\033[0m\n"
+  fi
 }
 
 # override default commands
